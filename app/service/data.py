@@ -4,7 +4,7 @@ from datasets import Dataset
 import logging
 import pandas as pd
 
-from .. import S3_CLIENT, AWS_S3_BUCKET_NAME
+from .. import S3_CLIENT, AWS_S3_BUCKET_NAME, AWS_S3_BUCKET_NAME2
 
 # QLoRa
 def get_data_from_storage(object_key: str) -> None:
@@ -44,9 +44,13 @@ def upload_folder(folder: str, local_folder_path: str):
     except Exception as e:
         return {"error": str(e)}
 
-async def get_latest_version(model_id: str) -> str:
+async def get_latest_version(model_id: str, for_text_train: bool) -> str:
     try:
-        response = S3_CLIENT.list_objects_v2(Bucket=AWS_S3_BUCKET_NAME, Prefix=str(model_id))
+        if for_text_train:
+            response = S3_CLIENT.list_objects_v2(Bucket=AWS_S3_BUCKET_NAME, Prefix=str(model_id))
+        else:
+            response = S3_CLIENT.list_objects_v2(Bucket=AWS_S3_BUCKET_NAME2, Prefix=str(model_id))
+
         if 'Contents' not in response:
             return None
         
@@ -58,7 +62,7 @@ async def get_latest_version(model_id: str) -> str:
     except Exception as e:
         return f"Error: {e}"
 
-async def download_from_s3(object_name: str) -> str:
+async def download_from_s3(object_name: str, for_text_train: bool) -> str:
     print('[INFO] EXECUTE download_from_s3()')
     curr_path = os.path.dirname(os.path.realpath(__file__))
     audio_dir_path = os.path.join(curr_path, 'audios')
@@ -69,7 +73,11 @@ async def download_from_s3(object_name: str) -> str:
             os.makedirs(audio_dir_path)  # 폴더가 없으면 생성
 
         download_path = os.path.join(audio_dir_path, object_name)   # 다운로드 경로
-        S3_CLIENT.download_file(AWS_S3_BUCKET_NAME, object_name, download_path)
+        if for_text_train:
+            S3_CLIENT.download_file(AWS_S3_BUCKET_NAME, object_name, download_path)
+        else:
+            S3_CLIENT.download_file(AWS_S3_BUCKET_NAME2, object_name, download_path)
+
         
         return download_path
     
