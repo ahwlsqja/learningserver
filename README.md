@@ -11,6 +11,13 @@ pip install aiohttp
 pip install python-dotenv
 ```
 
+## docker build
+```
+docker buildx build --platform linux/amd64 -t trainserver .
+docker tag trainserver phoonil/trainserver:latest
+docker push phoonil/trainserver:latest
+```
+
 ## GPU 최소사양
 - 8 bit 양자화 기준: 16GB
 

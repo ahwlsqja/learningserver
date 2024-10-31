@@ -6,3 +6,4 @@ pika
 dependency-injector
 boto3
 aiohttp
+datasets
