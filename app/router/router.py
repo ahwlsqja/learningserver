@@ -56,7 +56,11 @@ async def voice_train(model_id: str):
 #     print(f'[INFO] filename: {latest_version}')
     
 #     get_data_from_storage(object_key=latest_version)
+#     get_data_from_storage(object_key=latest_version)
 
 #     saved_model_path = Trainer(object_key=latest_version)
+#     saved_model_path = Trainer(object_key=latest_version)
+
+#     upload_folder(saved_model_path)
 
 #     upload_folder(saved_model_path)
